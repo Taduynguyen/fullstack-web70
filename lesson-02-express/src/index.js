@@ -1,9 +1,11 @@
 /** @format */
 const express = require('express');
-const authRouter = require('./router/authRouter');
-const productRouter = require('./router/productRouter');
+const authRouter = require('../router/authRouter');
+const productRouter = require('../router/productRouter');
 
 const app = express();
+
+app.use(express.json());
 
 app.use('/auth', authRouter);
 
