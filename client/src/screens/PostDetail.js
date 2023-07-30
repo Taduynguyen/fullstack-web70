@@ -4,25 +4,37 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Card, Spin } from 'antd';
 
-function PostDetail() {
+function PostDetail()
+{
 	const [postDetail, setPostDetail] = useState();
 	const [isLoading, setIsLoading] = useState(false);
 
-	const postId = 'fafhsjk';
+	const postId = '1';
 
-	useEffect(() => {
+	useEffect(() =>
+	{
 		getPostDetail();
 	}, [postId]);
 
-	const getPostDetail = async () => {
+	const getPostDetail = async () =>
+	{
 		const api = `http://localhost:3001/api/v1/posts/post-detail?id=${postId}`;
 		setIsLoading(true);
 		try {
-			const res = await axios.get(api);
+			const res = await axios({
+				method: 'get',
+				url: api,
+				headers: {
+					'apiKey': 'user1',
+					'Content-Type': 'application/json'
+				},
+			});
+
+			// console.log(res)
 
 			if (res && res.status === 200 && res.data) {
 				setPostDetail(res.data);
-				console.log(res.data);
+
 				setIsLoading(false);
 			} else {
 				setIsLoading(false);
@@ -33,6 +45,8 @@ function PostDetail() {
 			console.log(error);
 		}
 	};
+
+
 
 	return (
 		<div>

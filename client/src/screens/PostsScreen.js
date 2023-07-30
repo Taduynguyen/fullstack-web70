@@ -1,28 +1,45 @@
 /** @format */
 
 import React, { useState, useEffect } from 'react';
-import { Button, Card, List, Spin } from 'antd';
+import { Button, Card, List, Spin, message } from 'antd';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import UserName from '../components/UserName';
 
-function PostsScreen() {
+function PostsScreen()
+{
 	const [posts, setPosts] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 
-	useEffect(() => {
+	useEffect(() =>
+	{
 		getAllPosts();
 	}, []);
 
-	const getAllPosts = async () => {
+	const getAllPosts = async () =>
+	{
 		setIsLoading(true);
 
 		const api = `http://localhost:3001/api/v1/posts`;
 
 		try {
-			const res = await axios.get(api);
+			const res = await axios({
+				method: 'get',
+				url: api,
+				headers: {
+					'apiKey': 'user1',
+					'Content-Type': 'application/json'
+				},
+			});
 
 			if (res && res.status === 200 && res.data) {
-				setPosts(res.data.data);
+
+				const data = res.data
+				if (data.length > 0) {
+					setPosts(data);
+				} else {
+					message.error(res.data.message)
+				}
 				setIsLoading(false);
 			} else {
 				setIsLoading(false);
@@ -56,7 +73,7 @@ function PostsScreen() {
 								}
 								description={item.body}
 							/>
-							<a>{item.userId}</a>
+							<UserName uid={item.userId} />
 						</List.Item>
 					)}
 				/>

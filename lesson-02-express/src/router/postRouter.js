@@ -2,16 +2,55 @@
 
 const { Router } = require('express');
 const posts = require('../../data/posts.js');
+const checkAPIKey = require('../middlewares/post.js');
 
 const postRouter = Router();
+postRouter.use(checkAPIKey)
 
-postRouter.get('/', (req, res) => {
-	res.json({
-		data: posts,
-	});
-});
+postRouter.get('/', saveLog,
+	(req, res) =>
+	{
 
-postRouter.get('/post-detail', (req, res) => {
+		const count = req.query.id
+
+		/*
+			const system 
+
+
+			logs: [
+				{time, location, username, api},
+			]
+
+			fillter
+
+
+			const logs = user.logs
+
+
+			logs.push({
+				time: Date.now(),
+				location
+			})
+
+			app.get('/system/statistic', (req, res) => {
+				const apiKey = req.headers.apikey
+
+				const user  = users.find(element.apiKey === apiKey)
+				logs.filter()
+
+				res.json(
+					{user: 'alice', student: 5, teacher: 1, subject: 0},
+				)
+			})
+
+		*/
+		res.json(posts)
+	}
+
+);
+
+postRouter.get('/post-detail', (req, res) =>
+{
 	const id = req.query.id;
 
 	if (!id) {
@@ -31,7 +70,8 @@ postRouter.get('/post-detail', (req, res) => {
 	res.json(post);
 });
 
-postRouter.post('/', (req, res) => {
+postRouter.post('/', (req, res) =>
+{
 	const data = req.body;
 
 	if (!data) {
