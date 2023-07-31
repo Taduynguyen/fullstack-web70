@@ -1,16 +1,17 @@
-function checkAPIKey(req, res, next) 
-{
-  const apiKey = req.headers.apikey
+/** @format */
 
-  if (!apiKey) {
-    res.send({
-      data: [],
-      message: 'API Key missing!'
-    })
-    return
-  }
+function checkAPIKey(req, res, next) {
+	const apiKey = req.headers.apikey;
 
-  next()
+	if (!apiKey) {
+		res.send({
+			data: [],
+			message: 'API Key missing!',
+		});
+		return;
+	}
+
+	next();
 }
 
-module.exports = checkAPIKey
+module.exports = checkAPIKey;
