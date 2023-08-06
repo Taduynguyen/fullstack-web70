@@ -1,50 +1,27 @@
 /** @format */
 
 const { Router } = require('express');
-const posts = require('../../data/posts.js');
-const verifyToken = require('../middlewares/verifiToken.js');
-
+const { getCollection } = require('../db.js');
 const postRouter = Router();
 
-postRouter.get('/', verifyToken, (req, res) => {
-	res.json(posts);
+const postCollection =  getCollection('posts')
+
+
+postRouter.get('/', async (req, res) => {
+
+	 const posts = postCollection.find().toArray()
+	
+	res.json(posts)
 });
 
-postRouter.get('/post-detail', (req, res) => {
-	const id = req.query.id;
+postRouter.get('/post', async (req, res) => {
 
-	if (!id) {
-		res.json({
-			message: 'Thiếu id',
-		});
-	}
+	const id = req.query.id
 
-	const post = posts.find((element) => element.id === parseInt(id));
+	const post = await postCollection.find({_id: id})
 
-	if (!post) {
-		res.json({
-			message: 'Post not found',
-		});
-	}
+	res.json(post)
+})
 
-	res.json(post);
-});
-
-postRouter.post('/', (req, res) => {
-	const data = req.body;
-
-	if (!data) {
-		res.json({
-			message: 'Thiếu data',
-		});
-	}
-
-	posts.push(data);
-
-	res.json({
-		message: 'Bạn đã tạo bài viết thành công!',
-		data,
-	});
-});
 
 module.exports = postRouter;
