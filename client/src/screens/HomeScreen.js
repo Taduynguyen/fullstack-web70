@@ -1,13 +1,10 @@
 /** @format */
 
+import { Button } from 'antd';
 import React from 'react';
 
 function HomeScreen() {
-	return (
-		<div>
-			<h1>Hello</h1>
-		</div>
-	);
+	return <div></div>;
 }
 
 export default HomeScreen;

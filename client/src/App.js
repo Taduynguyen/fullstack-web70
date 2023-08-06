@@ -1,19 +1,47 @@
 /** @format */
 
 import './App.css';
+import { useEffect, useState } from 'react';
 import 'antd/dist/reset.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import HomeScreen from './screens/HomeScreen';
-import PostsScreen from './screens/PostsScreen';
-import PostDetail from './screens/PostDetail';
-import AddNewPost from './screens/AddNewPost';
+import {
+	LoginScreen,
+	HomeScreen,
+	PostsScreen,
+	PostDetail,
+	AddNewPost,
+} from './screens';
+import { Spin } from 'antd';
 
 function App() {
-	return (
+	const [isLogin, setIsLogin] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
+
+	useEffect(() => {
+		getToken();
+		setTimeout(() => {
+			setIsLoading(false);
+		}, 1000);
+	}, []);
+
+	const getToken = async () => {
+		const token = await localStorage.getItem('accessToken');
+
+		if (token) {
+			setIsLogin(true);
+		}
+	};
+
+	return isLoading ? (
+		<Spin />
+	) : !isLogin ? (
+		<>
+			<LoginScreen />
+		</>
+	) : (
 		<BrowserRouter>
 			<Routes>
-				<Route path='/' element={<HomeScreen />} />
-				<Route path='/posts' element={<PostsScreen />} />
+				<Route path='/' element={<PostsScreen />} />
 				<Route path='/post-detail' element={<PostDetail />} />
 				<Route path='/add-new' element={<AddNewPost />} />
 			</Routes>

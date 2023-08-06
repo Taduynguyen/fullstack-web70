@@ -2,12 +2,11 @@
 
 const { Router } = require('express');
 const posts = require('../../data/posts.js');
-const checkAPIKey = require('../middlewares/post.js');
+const verifyToken = require('../middlewares/verifiToken.js');
 
 const postRouter = Router();
-postRouter.use(checkAPIKey);
 
-postRouter.get('/', (req, res) => {
+postRouter.get('/', verifyToken, (req, res) => {
 	res.json(posts);
 });
 
