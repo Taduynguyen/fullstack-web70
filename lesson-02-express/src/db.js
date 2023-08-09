@@ -8,7 +8,7 @@ const client = new MongoClient(url);
 // Database Name
 const dbName = process.env.BD_NAME
 
-let database = {}
+let db = {}
 
 const connectToDB = async(app) => {
   try {
@@ -17,7 +17,11 @@ const connectToDB = async(app) => {
     console.log(`connect to db successfully`)
 
     database = client.db(dbName)
-    
+
+    db.posts = database.collection('posts')
+    db.restaurants = database.collection('restaurants')
+    db.comments = database.collection('comments')
+
     app.listen(process.env.PORT, (err) => {
       if (err) {
         console.log(`can not start server by ${err}`)
@@ -33,15 +37,4 @@ const connectToDB = async(app) => {
 }
 
 
-
-const getCollection =  async (collectionName) => {
- 
-  await client.connect();
-  database = client.db(dbName)
-  // console.log(database)
-  return  database.collection(collectionName)
-  
-} 
-
-
-module.exports = {connectToDB, getCollection}
+module.exports = {connectToDB, db}
