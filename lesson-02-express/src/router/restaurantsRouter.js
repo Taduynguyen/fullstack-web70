@@ -1,20 +1,22 @@
 /** @format */
 
 const { Router } = require('express');
-const {  db } = require('../db.js');
+const { db } = require('../db.js');
 const restaurantRouter = Router();
-const {ObjectId} = require('mongodb')
+const { ObjectId } = require('mongodb')
 
 dbRestaurant = db.restaurants
 
-restaurantRouter.get('/', async (req, res) => {
-	const {page, pageSize} = req.query
+restaurantRouter.get('/', async (req, res) =>
+{
+	const { page, pageSize } = req.query
 	try {
 		const results = await db.restaurants.find({}).limit(parseInt(pageSize)).toArray()
-		
+
 		res.status(200).json({
 			message: '',
-			data: results, totalItems: results.length})
+			data: results, totalItems: results.length
+		})
 	} catch (error) {
 		console.log(error)
 		res.status(500).json({
@@ -23,23 +25,25 @@ restaurantRouter.get('/', async (req, res) => {
 	}
 });
 
-restaurantRouter.get('/detail', async (req, res) => {
+restaurantRouter.get('/detail', async (req, res) =>
+{
 
 	const id = req.query.id
 	console.log(id)
 	try {
-		const results = await db.restaurants.find({_id: new ObjectId(id)}).toArray()
+		const results = await db.restaurants.find({ _id: new ObjectId(id) }).toArray()
 		if (results.length > 0) {
 			res.status(200).json({
-			message: '',
-			data: results[0]})
-		}else{
+				message: '',
+				data: results[0]
+			})
+		} else {
 			res.status(202).json({
 				message: 'Restaurant not found!',
 				data: []
 			})
 		}
-		
+
 	} catch (error) {
 		console.log(error)
 		res.status(500).json({
@@ -48,21 +52,23 @@ restaurantRouter.get('/detail', async (req, res) => {
 	}
 });
 
-restaurantRouter.put('/', async (req, res) => {
+restaurantRouter.put('/', async (req, res) =>
+{
 
 	const id = req.query.id
 	const data = req.body
 	// console.log(data, data.name, id)
 	try {
-		await db.restaurants.updateOne({_id: new ObjectId(id)}, {
-			$set :{
+		await db.restaurants.updateOne({ _id: new ObjectId(id) }, {
+			$set: {
 				name: data.name,
 				'age': data.age
 			},
-			$push:{
-				grades:{$each: data.grades}
+			$push: {
+				grades: { $each: data.grades }
 			}
-		}).then(() =>{
+		}).then(() =>
+		{
 
 			res.send('Done')
 		})
@@ -74,12 +80,34 @@ restaurantRouter.put('/', async (req, res) => {
 	}
 });
 
-restaurantRouter.post('/add-new', async (req, res) => {
+restaurantRouter.post('/add-new', async (req, res) =>
+{
 
 	const data = req.body
 
 	try {
-		await db.restaurants.insertOne(data).then((result) => {
+		await db.restaurants.insertOne(data).then((result) =>
+		{
+			
+			res.status(200).json({
+				message: 'Add new restaurant successfully!'
+			})
+		})
+	} catch (error) {
+		res.status(400).json({
+			message: 'Can not add new restaurant'
+		})
+	}
+
+})
+restaurantRouter.post('/add-many', async (req, res) =>
+{
+
+	const data = req.body
+
+	try {
+		await db.restaurants.insertMany(data).then((result) =>
+		{
 			console.log(result)
 			res.status(200).json({
 				message: 'Add new restaurant successfully!'
@@ -90,40 +118,40 @@ restaurantRouter.post('/add-new', async (req, res) => {
 			message: 'Can not add new restaurant'
 		})
 	}
-	
-})
-restaurantRouter.post('/add-many', async (req, res) => {
 
-	const data = req.body
+})
+
+restaurantRouter.delete('/', async (req, res) =>
+{
+
+	const id = req.query.id
 
 	try {
-		await db.restaurants.insertMany(data).then((result) => {
-			console.log(result)
-			res.status(200).json({
-				message: 'Add new restaurant successfully!'
+
+		if (id) {
+			await db.restaurants.deleteOne({ _id: new ObjectId(id) }).then(() =>
+			{
+				res.send('Done')
 			})
-		})
-	} catch (error) {
-		res.status(400).json({
-			message: 'Can not add new restaurant'
-		})
-	}
-	
-})
+		} else {
+			const objectIds = []
 
-restaurantRouter.delete('/', async (req, res) => {
+			const ids = req.body.ids
 
-	const objectIds = []
+			ids.forEach(id => objectIds.push(new ObjectId(id)))
 
-	const ids = req.body.ids
+			await db.restaurants.deleteMany({
+				_id: {
+					$in:
+						objectIds
+				}
+			}).then(() =>
+			{
+				res.send('Done')
+			})
+		}
 
-	ids.forEach(id => objectIds.push(new ObjectId(id)))
 
-	try {
-		await db.restaurants.deleteMany({_id:{$in: 
-		objectIds}}).then(() =>{
-			res.send('Done')
-		})
 	} catch (error) {
 		console.log(error)
 		res.status(500).json({

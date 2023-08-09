@@ -12,6 +12,7 @@ import {
 	AddNewPost,
 } from './screens';
 import { Spin } from 'antd';
+import Restaurants from './screens/Restaurants';
 
 function App() {
 	const [isLogin, setIsLogin] = useState(false);
@@ -44,6 +45,7 @@ function App() {
 				<Route path='/' element={<PostsScreen />} />
 				<Route path='/post-detail' element={<PostDetail />} />
 				<Route path='/add-new' element={<AddNewPost />} />
+				<Route path='/restaurants' element={<Restaurants />} />
 			</Routes>
 		</BrowserRouter>
 	);
