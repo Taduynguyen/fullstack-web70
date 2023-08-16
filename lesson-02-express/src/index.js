@@ -5,6 +5,7 @@ const authRouter = require('./router/authRouter');
 const postRouter = require('./router/postRouter');
 const {connectToDB} = require('./db');
 const restaurantRouter = require('./router/restaurantsRouter');
+require('dotenv').config();
 
 const app = express();
 

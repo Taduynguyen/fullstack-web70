@@ -4,6 +4,7 @@ const { Router } = require('express');
 const {  db } = require('../db.js');
 const postRouter = Router();
 const {posts} = require('../../data/posts.json')
+require('dotenv').config();
 
 postRouter.get('/', async (req, res) => {
 	const posts = await db.posts.find({}).toArray()
